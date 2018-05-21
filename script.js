@@ -60,7 +60,7 @@ function createElementFromHTML(htmlString) {
 
 var selectedRegion = {}
 var html = ""
-var cssDeclarations = []
+var panelIndexToStyleSheetIndex = []
 
 function edited(e) {
     html = document.getElementById("p-edit").innerHTML
@@ -102,40 +102,10 @@ function updateSelectedElement() {
         newElement.classList.remove(newElement.classList[i])
     }
     for (var i = 0; i < newClassListItems.length; i++) {
-        newElement.classList.add(newClassListItems[i].innerText.trim())
+        if (newClassListItems[i].innerText.trim().length > 0) {
+            newElement.classList.add(newClassListItems[i].innerText.trim())
+        }
     }
-
-    var selectors = document.getElementsByClassName('p-selector')
-    // selectors = selectors.map(x => x.innerText)
-    // console.log(selectors)
-
-    // update css
-    // var styleSheet = document.styleSheets[0]
-    // for (var i = 0; i < styleSheet.cssRules.length; i++) {
-    //     if (styleSheet.cssRules[i].selectorText === selector) {
-    //         if (ruleName === "" || ruleValue === "") {
-    //             styleSheet.cssRules[i].style[camelCase(ruleName)] = ""
-    //             styleSheet.cssRules[i].style.removeProperty(camelCase(ruleName))
-    //         } else {
-    //             styleSheet.cssRules[i].style[camelCase(ruleName)] = ruleValue
-    //         }
-    //     }
-    // }
-    // for (var i = 0; i < styleSheet.cssRules.length; i++) {
-    //     if (styleSheet.cssRules[i].selectorText === document.getElementById()) {
-    //         styleSheet.cssRules[i].selectorText = newSelector
-    //     }
-    // }
-    // oldElementCSS = cssOf(selectedRegion.anchorElement)
-    // console.log(oldElementCSS)
-    // for (var i = 0; i < styleSheet.cssRules.length; i++) {
-    //     if (styleSheet.cssRules[i].selectorText === oldElementCSS.) {
-    //         styleSheet.cssRules[i].selectorText = newSelector
-    //     }
-    // }
-    // console.log("new sheet: ", styleSheet);
-
-
 
     // copy child nodes
     do {
@@ -181,7 +151,7 @@ function updateSideBar() {
     for (var i = 0; i < selectedElementCSS.length; i++) {
         renderedCSSRules = ""
         cssRules = [] // used for keeping track of currentCSSRules
-        for (var j = 0; j < selectedElementCSS[i].styleMap.size; j++) {
+        for (let j = 0; j < selectedElementCSS[i].styleMap.size; j++) {
             cssRuleProperty = selectedElementCSS[i].style[j]
             cssRuleVars = {
                 property: cssRuleProperty,
@@ -196,86 +166,54 @@ function updateSideBar() {
         }
         renderedCSSPanelsTemplate = renderTemplate(cssPanelTemplate, selectorVars)
         renderedCSSPanels += renderedCSSPanelsTemplate
+        // update internal store
+        var styleSheet = document.styleSheets[0]
+        for (let j = 0; j < styleSheet.cssRules.length; j++) {
+            console.log(styleSheet.cssRules[j])
+            console.log("this rule selectorText: ", selectedElementCSS[i].selectorText)
+            if (styleSheet.cssRules[j].selectorText === selectedElementCSS[i].selectorText) {
+                console.log("pushing!")
+                panelIndexToStyleSheetIndex.push(j)
+            }
+        }
     }
     document.getElementById("p-sidebar-css-panels").innerHTML = renderedCSSPanels
     // bind event listeners to newly created elements
     var cssPanels = document.getElementsByClassName('p-css-panel')
     for (var i = 0; i < cssPanels.length; i++) {
-        cssPanels[i].addEventListener('input', changeCss)
+        cssPanels[i].addEventListener('input', updateCss)
+    }
+    
+}
+
+function updateCss(event) {
+    var styleSheet = document.styleSheets[0]
+    var cssPanel = nearestParentOfClass(event.target, 'p-field-group')
+    var renderedCss = cssRuleFromPanel(cssPanel)
+    var index = panelIndexToStyleSheetIndex[getChildNumber(cssPanel) - 1]
+    try {
+        styleSheet.insertRule(renderedCss, index)
+        styleSheet.deleteRule(index + 1)
+        console.log("new rule: ", styleSheet[index])
+    }
+    catch(error) {
+        // any error is just improper cssRule. Probably ok
+        // in this case we just don't update the css
     }
 }
 
-function changeCss(event) {
-
-    allSelectors = document.getElementsByClassName('p-selector')
-    for (var i = 0; i < allSelectors.length; i++) {
-        if (allSelectors[i].innerText != cssDeclarations[i].selector) { 
-            // selector has changed!!
-            cssDeclarations[i].selector = allSelectors[i].innerText
-            console.log("selector updated!")
-        } 
-        else {
-            console.log("selector unchanged")
-        }
-    }
-    // console.log(cssDeclarations)
-    // console.log('Hey, somebody changed something in my text!', event)
-    updateStyleSheet(oldCssDeclarations, cssDeclarations)
-    // updateSideBar()
-}
-
-function renderCssFromPanel(panel) {
-    selector = document.getElementsByClassName('p-selector')[0].innerText
-    ruleElements = document.getElementsByClassName('p-declaration-property')
-    rules = []
+function cssRuleFromPanel(panel) {
+    let selector = document.getElementsByClassName('p-selector')[0].innerText
+    let ruleElements = document.getElementsByClassName('p-declaration-property')
+    let rules = []
     for (var i = 0; i < ruleElements.length; i++) {
-        property = panel.getElementsByClassName('p-declaration-property')[i].innerText
-        value = panel.getElementsByClassName('p-declaration-value')[i].innerText
+        let property = panel.getElementsByClassName('p-declaration-property')[i].innerText.trim()
+        let value = panel.getElementsByClassName('p-declaration-value')[i].innerText.trim()
         rules.push(property + ": " + value + "; ")
     }
-    ruleString = selector + " {" + rules.join("") + "} "
-    console.log(ruleString)
-}
-
-function updateStyleSheet(oldCssDeclarations, newCssDeclarations) {
-    // update css
-    var styleSheet = document.styleSheets[0]
-    var cssFields = document.getElementsByClassName('p-field-group')
-    for (var i = 0; i < styleSheet.cssRules.length; i++) {
-        for (var j = 0; j < oldCssDeclarations.length; j++) {
-            // console.log("styleSheet selector: ", styleSheet.cssRules[i].selectorText)
-            // console.log("cssDeclarations selector: ", oldCssDeclarations[j].selector)
-            if (styleSheet.cssRules[i].selectorText === oldCssDeclarations[j].selector) {
-                renderedCss = renderCssFromPanel(cssFields[j])
-                console.log("before", styleSheet.cssRules[i])
-                styleSheet.cssRules[i].cssText = renderedCss
-                console.log("after", styleSheet.cssRules[i])
-            }
-        }
-    }
-        // if (styleSheet.cssRules[i].selectorText === selector) {
-    //         if (ruleName === "" || ruleValue === "") {
-    //             styleSheet.cssRules[i].style[camelCase(ruleName)] = ""
-    //             styleSheet.cssRules[i].style.removeProperty(camelCase(ruleName))
-    //         } else {
-    //             styleSheet.cssRules[i].style[camelCase(ruleName)] = ruleValue
-    //         }
-    //     }
-    // }
-    // for (var i = 0; i < styleSheet.cssRules.length; i++) {
-    //     if (styleSheet.cssRules[i].selectorText === document.getElementById()) {
-    //         styleSheet.cssRules[i].selectorText = newSelector
-    //     }
-    // }
-    // oldElementCSS = cssOf(selectedRegion.anchorElement)
-    // console.log(oldElementCSS)
-    // for (var i = 0; i < styleSheet.cssRules.length; i++) {
-    //     if (styleSheet.cssRules[i].selectorText === oldElementCSS.) {
-    //         styleSheet.cssRules[i].selectorText = newSelector
-    //     }
-    // }
-    // console.log("new sheet: ", styleSheet);
-
+    let ruleString = selector + " {" + rules.join("") + "} "
+    // console.log(CSSStyleRule)
+    return ruleString
 }
 
 function selectParent() {
@@ -286,6 +224,10 @@ function selectParent() {
         selectedRegion = newRegion
     }
     updateSideBar()
+}
+
+function getChildNumber(node) {
+    return Array.prototype.indexOf.call(node.parentNode.childNodes, node)
 }
 
 function SelectRegion(anchorNode) {
@@ -338,6 +280,21 @@ function cssOf(a) {
         }
     }
     return o
+}
+
+function nearestParentOfClass(element, classToFind) {
+    console.log("element: ", element)
+    if (element === null) {
+        return null
+    }
+    if (element.parentElement === null) {
+        return null
+    }
+    if (element.parentElement.classList.contains(classToFind)) {
+        return element.parentElement
+    } else {
+        return nearestParentOfClass(element.parentElement, classToFind)
+    }
 }
 
 
