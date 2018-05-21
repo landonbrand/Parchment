@@ -1,0 +1,472 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#p-sidebar a {
+  text-decoration: none;
+  padding: 4px;
+}
+
+#p-sidebar nav {
+  text-align: center;
+}
+
+#p-sidebar {
+  text-align: center;
+  font-family: helvetica;
+  font-size: 14px;
+  overflow: scroll;
+}
+
+#p-sidebar .big {
+  font-size: 2em;
+}
+
+.p-container {
+  max-width: 1100px;
+  text-align: center;
+}
+
+.p-page {
+  display: inline-block;
+  text-align: left;
+  width: 900px;
+  padding-left: 300px;
+  padding-right: 200px;
+}
+
+#edit {
+  outline: none;
+  text-align: left;
+}
+
+#p-sidebar {
+  position: fixed;
+  left:0; top: 0; bottom: 0;
+  width: 200px;
+  background-color: rgb(29, 69, 135);
+  padding: 10px;
+  text-align: left;
+  color: #ccc;
+}
+
+#p-sidebar a {
+  color: #eee;
+  text-decoration: underline;
+}
+
+#p-sidebar p {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+#p-sidebar button {
+  margin-top: 10px;
+  font-size: 0.9em;
+  padding: 8px;
+  background-color: #33c;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+#p-sidebar button:hover {
+  background-color: #66f;
+}
+
+#p-sidebar button:active {
+  background-color: #11a;
+}
+
+.p-selected-region {
+  outline: 2px dotted;
+  outline-width: 2px;
+  outline-color: rgba(255, 0, 0, 1);
+}
+
+#p-sidebar .p-field {
+  color: black;
+  background-color: rgb(232, 232, 232);
+  box-shadow: inset 0px 3px 2px rgba(0,0,0,0.25);
+  border-radius: 4px;
+  min-width: 18px;
+  display: inline-block;
+}
+
+#p-sidebar .p-field:focus {
+  outline: none;
+}
+
+#p-sidebar .p-selected {
+  box-shadow: 0px 3px 2px rgba(0,0,0,0.3);
+}
+
+#p-sidebar span{
+  font-size: 12px;
+  line-height: 1em;
+  padding: 8px;
+}
+
+#p-sidebar .big {
+  font-size: 2em;
+}
+
+#p-sidebar .p-no-padding {
+  padding: 0;
+}
+
+.p-no-focus:focus {
+  outline: none;
+}
+
+#p-sidebar .p-up{
+  position: relative;
+  right: 0; left: auto;
+  top: 0;
+  padding: 16px;
+  padding-bottom: 9px;
+  padding-top: 2px;
+  background-color: red;
+  font-size: 10px;
+}
+
+#p-sidebar .p-up:hover{
+  background-color: rgb(255, 130, 130);
+}
+
+#p-sidebar .p-delete-button {
+  display: block;
+  background-color: rgb(211, 53, 53);
+  padding: 4px;
+  color: white;
+  width: 100%;
+}
+
+#p-sidebar .p-delete-button:hover {
+  display: block;
+  background-color: rgb(240, 53, 53);
+  padding: 4px;
+  color: white;
+  width: 100%;
+}
+
+#p-sidebar .p-class-list {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+#p-sidebar .p-class-list-item {
+  margin: 0;
+  display: inline-block;
+  margin-top: 8px;
+  margin-right: 4px;
+  border-radius: 4px;
+  padding: 6px;
+  background-color: rgb(221, 194, 161);
+  color: rgb(155, 81, 36);
+}
+
+#p-sidebar .p-class-list-item:focus {
+  outline: none;
+}
+
+#p-sidebar .p-fake-class-list-item {
+  /* display: inline-block; */
+  margin: 0;
+  margin-top: 8px;
+  margin-right: 8px;
+  border-radius: 4px;
+  padding: 6px;
+  cursor: pointer;
+  background-color: rgb(221, 194, 161);
+  color: rgb(183, 107, 41);
+  float: left;
+}
+
+#p-sidebar .p-field-group {
+  background-color: rgb(94, 134, 196);
+  border-radius: 3px;
+  padding: 8px;
+}
+
+#p-sidebar .p-add-declaration {
+  display: block;
+  font-size: 12px;
+  width: 100%;
+  padding: -4px;
+  margin-left: -8px;
+  margin-bottom: -8px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  cursor: pointer;
+  color: #ddd;
+  background-color: rgb(68, 103, 178);
+}
+
+#p-sidebar .p-add-declaration:hover {
+  background-color: rgb(78, 113, 188);
+}
+
+#p-sidebar .p-padding-6 {
+  padding: 6px;
+}
+
+#p-sidebar .p-bg-red {
+  background-color: red;
+}
+
+#p-sidebar .p-bg-red:hover {
+  background-color: rgb(255, 110, 110);
+}
+
+#p-sidebar [class*='p-close-'] {
+  color: #fff;
+  font: 18px/100% arial, sans-serif;
+  float: right;
+  text-decoration: none;
+  /*text-shadow: 0 1px 0 #fff;*/
+  margin-top: -5px;
+  margin-right: -3px;
+}
+
+#p-sidebar .p-close-thin:after {
+  content: '×'; /* UTF-8 symbol */
+}
+
+#p-sidebar .p-inline-brick {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#p-sidebar .p-padded-top {
+  margin-top: 16px;
+}
+
+#p-sidebar .p-tag-name {
+  font-size: 24px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  width: 125px;
+  line-height: 32px;
+}
+
+/* #p-sidebar .ember-view {
+  padding: 0;
+} */
+
+#p-sidebar .p-small-square-btn {
+  padding: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin: 4px;
+  margin-top: 0;
+  margin-bottom: 6px;
+  background-color: #ddd;
+  font-weight: bold;
+  color: rgb(29, 69, 135);
+}
+
+#p-sidebar .p-small-square-btn:hover {
+  background-color: #eee;
+}
+
+#p-sidebar .p-full-width {
+  display: block;
+  width: 180px;
+}
+
+#p-sidebar .p-new-sttyle-btn {
+  background-color: rgb(94, 134, 196);
+  width: 100%;
+  text-transform: uppercase;
+  font-style: bold;
+  padding: 10px;
+  letter-spacing: 1px;
+}
+
+#p-sidebar .p-new-sttyle-btn:hover {
+  background-color: rgb(110, 150, 220);
+  width: 100%;
+  text-transform: uppercase;
+  font-style: bold;
+  padding: 10px;
+  letter-spacing: 1px;
+}
+
+#p-sidebar .p-tag-id-outer {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding: 10px;
+}
+
+#p-sidebar .p-tag-id {
+  font-size: 1.2em;
+}
+
+#p-sidebar .p-declaration {
+  overflow-x: scroll;
+  white-space: nowrap;
+  display: block;
+  margin: 0;
+  margin-top: -8px;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 0.9em;
+  background-color: rgb(232, 232, 232);
+  color: rgb(150, 31, 98);
+}
+
+#p-sidebar .p-declaration:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+#p-sidebar .p-declaration-property {
+  display: inline;
+  border-radius: 0;
+  background-color: rgb(220, 197, 214);
+  font-weight: bold;
+  margin: 0;
+  margin-left: -3px;
+  padding: 6px;
+  padding-top: 7px;
+  border-left: none;
+}
+
+#p-sidebar .p-declaration-value {
+  display: inline;
+  margin-left: -4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  margin: 0;
+  padding: 6px;
+}
+
+#p-sidebar .p-remove-declaration {
+  display: inline-block;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: rgb(220, 197, 214);
+  color: rgb(150, 31, 98);
+  font-weight: bold;
+  margin: 0;
+  padding: 6px;
+  cursor: pointer;
+  text-shadow: 0px 1px #eee;
+}
+
+#p-sidebar .p-selector {
+  /* text-transform: uppercase; */
+  font-size: 13px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  margin-top: 4px;
+  padding: 8px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  color: black;
+  background-color: rgb(232, 232, 232);
+  box-shadow: inset 0px 2px 2px rgba(0,0,0,0.25);
+  width: 140px;
+  border-radius: 4px;
+  display: inline-block;
+
+}
+
+#p-main-site {
+  font-family: Helvetica;
+}
+
+#p-main-site {
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-family: "open sans", "Helvetica", sans-serif;
+}
+
+#p-main-site nav {
+  background-color: #333;
+  padding: 15px;
+  color: white;
+}
+
+#p-main-site nav a {
+  color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-decoration: none;
+}
+
+#p-main-site nav a:hover {
+  color: rgb(150, 255, 150);
+}
+
+#p-main-site section {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  padding: 25px;
+}
+
+#p-main-site .p-limit-width {
+  max-width: 400px;
+}
+
+#p-main-site h1.p-main-heading {
+  font-size: 4em;
+  font-family: 'Cutive Mono', monospace;
+  letter-spacing: -4px;
+  margin: 0;
+  margin-top: 16vh;
+  text-align: center;
+}
+
+#p-main-site .p-centerizer {
+  text-align: center;
+}
+
+#p-main-site .p-pad-top {
+  padding-top: 20px;
+}
+
+#p-main-site button {
+  background-color: rgb(100, 170, 60);
+  border: none;
+  border-radius: 3px;
+  font-size: 0.8em;
+  padding: 18px;
+  padding-left: 25px;
+  padding-right: 25px;
+  color: white;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#p-main-site button:hover {
+  background-color: rgb(120, 190, 80);
+  cursor: pointer;
+}
+
+#p-main-site input {
+  font-size: 12px;
+  width: 300px;
+  margin: 10px;
+  padding: 4px;
+  border: 2px solid black;
+  border-radius: 3px;
+}
+
+#p-main-site .p-no-margin {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+h1 {
+  color: red;
+}

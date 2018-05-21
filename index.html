@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Parchment</title>
+        <link rel="stylesheet" href="styles.css" media="screen" title="Parchment css">
+        <script type="text/javascript" src="script.js"></script>
+    </head>
+    <body>
+        <div id="p-sidebar">
+            <section id="p-sidebar-top">
+            <button id="p-delete" class="p-delete-button">Delete Element</button>
+            <div class="p-inline-brick">
+                <span id="p-tagName"
+                    class="p-field p-tag-name"
+                    contenteditable="true"
+                    onkeyup="updateSelectedElement()">
+                </span>
+            </div>
+            <div class="p-inline-brick p-padded-top">
+                <button id="p-selectParent" class="p-small-square-btn" onclick="selectParent()">^</button>
+        
+                <br/>
+                <button id="p-newNode" class="p-small-square-btn">+</button>
+            </div>
+        
+            <span id="p-tagId" class="p-field full-width p-tag-id-outer" contenteditable="false">
+                <span class="p-no-padding p-tag-id"><b>#</b></span>
+                <span id="p-tagId-unfocusable"
+                    tabindex="-1"
+                    class="p-no-padding p-no-focus p-tag-id"
+                    contenteditable="true"
+                    onkeyup="updateSelectedElement()">
+                </span>
+            </span>
+            </section>
+            <section id="p-sidebar-classes" class="p-class-list">
+                <span id="p-newClass" class="p-fake-class-list-item" onclick="addNewClass()">+</span>
+                <div id="p-class-list">
+                </div>
+            </section>
+            <section id="p-sidebar-css-panels">
+                <div class="p-field-group">
+                    <span class="p-close-thin"></span>
+                    <span class="p-selector"
+                            contenteditable="true">
+                            .apple a
+                    </span>
+                    <br/>
+                    <!-- {{#each style.rules as |rule|}} -->
+                        <span class="p-declaration">
+                            <span contenteditable="false"
+                                    class="p-remove-declaration">x</span>
+                    
+                            <span class="p-declaration p-declaration-property"
+                                    contenteditable="true">
+                    
+                                padding
+                            </span>
+                            <span class="p-declaration p-declaration-value"
+                                    contenteditable="true">
+                                10px
+                            </span>
+                        </span>
+                        <br/>
+                    <!-- {{/each}} -->
+                    <span class="p-add-declaration">+ add declaration</span>
+                </div>
+                <br/>
+            <!-- {{/each}} -->
+            <button class="p-new-style-btn p-padding-6">New Style</button>
+            </section>
+        <br/>
+        <br/>
+        <p>CMD + S to save</p>
+        <p>Click on elements in the page to edit them </p>
+        </div>
+        </div>
+
+        <div class="p-container">
+            <div class="p-page">
+                <div id="p-edit" contenteditable="true" onkeyup="edited(event)" onmouseup="editedMouseUp(event)">
+                    <section id="hero" class="hero">
+                        <h1 id="hero-heading" class="major-thing">Hello, World!</h1>
+                        <p class="bigger better more-awesome">Parchment is an editor for the future of web development.</p>
+                    </section>
+                    <section id="second" class="bg-red">
+                        <p>second section is here.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
