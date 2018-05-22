@@ -3,6 +3,18 @@
   padding: 0;
 }
 
+#_parchment_-sidebar * {
+  all: unset;
+  display: inherit;
+  font-family: inherit;
+  color: inherit;
+  -webkit-user-modify: none;
+}
+
+#_parchment_-sidebar *[contentEditable] {
+  -webkit-user-modify: read-write;
+}
+
 #_parchment_-sidebar a {
   text-decoration: none;
   padding: 4px;
@@ -72,6 +84,8 @@
   border-radius: 3px;
   outline: none;
   cursor: pointer;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 #_parchment_-sidebar button:hover {
@@ -473,10 +487,6 @@
   outline: 3px solid red;
 }
 
-h1 {
-  color: red;
-}
-
-body {
-  color: blue;
+#_parchment_-edit:focus{
+  outline: none;
 }

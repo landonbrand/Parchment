@@ -4,36 +4,35 @@
         <meta charset="utf-8">
         <title>Parchment</title>
         <link rel="stylesheet" href="styles.css" media="screen" title="Parchment css">
-        <script type="text/javascript" src="script.js"></script>
     </head>
     <body class="_parchment_-body">
         <div id="_parchment_-sidebar">
             <section id="_parchment_-sidebar-top">
-            <button id="_parchment_-delete" class="_parchment_-delete-button" onclick="deleteElement()">Delete Element</button>
-            <div class="_parchment_-inline-brick">
-                <span id="_parchment_-tagName"
-                    class="_parchment_-field _parchment_-tag-name"
-                    contenteditable="true"
-                    onkeyup="updateSelectedElement()">
+                <button id="_parchment_-delete" class="_parchment_-delete-button" onclick="deleteElement()">Delete Element</button>
+                <div class="_parchment_-inline-brick">
+                    <span id="_parchment_-tagName"
+                        class="_parchment_-field _parchment_-tag-name"
+                        contenteditable="true"
+                        onkeyup="updateSelectedElement()">
+                    </span>
+                </div>
+                <div class="_parchment_-inline-brick _parchment_-padded-top">
+                    <button id="_parchment_-selectParent" class="_parchment_-small-square-btn" onclick="selectParent()">^</button>
+            
+                    <br/>
+                    <button id="_parchment_-newNode" class="_parchment_-small-square-btn" onclick="newElement()">+</button>
+                    <button id="_parchment_-newNode" class="_parchment_-small-square-btn" onclick="newElementEnclosing()">[+]</button>
+                </div>
+            
+                <span id="_parchment_-tagId" class="_parchment_-field full-width _parchment_-tag-id-outer" contenteditable="false">
+                    <span class="_parchment_-no-padding _parchment_-tag-id"><b>#</b></span>
+                    <span id="_parchment_-tagId-unfocusable"
+                        tabindex="-1"
+                        class="_parchment_-no-padding _parchment_-no-focus _parchment_-tag-id"
+                        contenteditable="true"
+                        onkeyup="updateSelectedElement()">
+                    </span>
                 </span>
-            </div>
-            <div class="_parchment_-inline-brick _parchment_-padded-top">
-                <button id="_parchment_-selectParent" class="_parchment_-small-square-btn" onclick="selectParent()">^</button>
-        
-                <br/>
-                <button id="_parchment_-newNode" class="_parchment_-small-square-btn" onclick="newElement()">+</button>
-                <button id="_parchment_-newNode" class="_parchment_-small-square-btn" onclick="newElementEnclosing()">[+]</button>
-            </div>
-        
-            <span id="_parchment_-tagId" class="_parchment_-field full-width _parchment_-tag-id-outer" contenteditable="false">
-                <span class="_parchment_-no-padding _parchment_-tag-id"><b>#</b></span>
-                <span id="_parchment_-tagId-unfocusable"
-                    tabindex="-1"
-                    class="_parchment_-no-padding _parchment_-no-focus _parchment_-tag-id"
-                    contenteditable="true"
-                    onkeyup="updateSelectedElement()">
-                </span>
-            </span>
             </section>
             <section id="_parchment_-sidebar-classes" class="_parchment_-class-list">
                 <span id="_parchment_-newClass" class="_parchment_-fake-class-list-item" onclick="addNewClass()">+</span>
@@ -43,12 +42,21 @@
             <section id="_parchment_-sidebar-css-panels">
             </section>
             <button class="_parchment_-new-style-btn _parchment_-padding-6" onclick="newCssRule()">New Style</button>
-        <br/>
-        <br/>
-        <p>CMD + S to save</p>
-        <p>Click on elements in the page to edit them </p>
+            <br/>
+            <br/>
+            <p>CMD + S to save</p>
+            <p>Click on elements in the page to edit them </p>
         </div>
-        </div>
+        <style id='_parchment_-document-style'>
+            h1 {
+                color: red;
+              }
+              
+              body {
+                color: blue;
+              }
+        </style>
+        <script type="text/javascript" src="script.js"></script>
 
         <div class="_parchment_-container">
             <div class="_parchment_-page">

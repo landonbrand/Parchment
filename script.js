@@ -13,7 +13,7 @@ var cssPanelTemplate = `
 <div class="_parchment_-css-panel _parchment_-css-panel">
     <span class="_parchment_-close-thin" onclick="removeCssRule(event)"></span>
     <span class="_parchment_-selector"
-            contenteditable="true"}>
+            contenteditable="true">
             {{selector}}
     </span>
     <br/>
@@ -56,10 +56,17 @@ function createElementFromHTML(htmlString) {
 
 // end templates
 
+// init stuff
+console.log(document.getElementById("_parchment_-sidebar").style)
+
+// create global variables
 
 var selectedRegion = {}
 var html = ""
 var panelIndexToStyleSheetIndex = []
+
+
+// functions
 
 function edited(e) {
     html = document.getElementById("_parchment_-edit").innerHTML
@@ -171,7 +178,7 @@ function updateSideBar() {
         let renderedCSSPanelsTemplate = renderTemplate(cssPanelTemplate, selectorVars)
         renderedCSSPanels += renderedCSSPanelsTemplate
         // update internal store
-        let styleSheet = document.styleSheets[0]
+        let styleSheet = document.styleSheets[1]
         for (let j = 0; j < styleSheet.cssRules.length; j++) {
             if (styleSheet.cssRules[j].selectorText === selectedElementCSS[i].selectorText) {
                 panelIndexToStyleSheetIndex.push(j)
@@ -191,7 +198,7 @@ function cssInputsChanged(event) {
 }
 
 function updateCss(eventTargetElement) {
-    var styleSheet = document.styleSheets[0]
+    var styleSheet = document.styleSheets[1]
     var cssPanel = nearestParentOfClass(eventTargetElement, '_parchment_-css-panel')
     var renderedCss = cssRuleFromPanel(cssPanel)
     var index = panelIndexToStyleSheetIndex[getChildNumber(cssPanel)]
@@ -233,11 +240,12 @@ function removeDeclaration(event) {
 }
 
 function removeCssRule(event) {
-    let styleSheet = document.styleSheets[0]
+    let styleSheet = document.styleSheets[1]
     let cssPanel = nearestParentOfClass(event.target, '_parchment_-css-panel')
     let childNumber = getChildNumber(cssPanel)
     let indexToDelete = panelIndexToStyleSheetIndex[childNumber]
     styleSheet.deleteRule(indexToDelete)
+
     updateSideBar()
 }
 
@@ -250,9 +258,9 @@ function newCssRule() {
     let renderedCSSPanelsTemplate = renderTemplate(cssPanelTemplate, selectorVars)
 
     // update styleSheet to have a new rule
-    let styleSheet = document.styleSheets[0]
-    styleSheet.insertRule(".new-rule {}", styleSheet.cssRules.length - 1)
-    panelIndexToStyleSheetIndex.push(styleSheet.cssRules.length - 1)
+    let styleSheet = document.styleSheets[1]
+    styleSheet.insertRule(".new-rule {}", styleSheet.cssRules.length)
+    panelIndexToStyleSheetIndex.push(styleSheet.cssRules.length)
 
     // push to document
     let oldInnerHTML = document.getElementById("_parchment_-sidebar-css-panels").innerHTML
@@ -333,7 +341,7 @@ function SelectRegion(anchorNode) {
 
 
 function renderStyleSheet() {
-    var styleSheet = document.styleSheets[0]
+    var styleSheet = document.styleSheets[1]
     var cssArray = []
     var pageCSS
     if (styleSheet.cssRules != null ) {
@@ -352,14 +360,12 @@ function renderStyleSheet() {
 // misc utilities
 
 function cssOf(a) {
-    var sheets = document.styleSheets, o = []
+    var sheet = document.styleSheets[1], o = []
     a.matches = a.matches || a.webkitMatchesSelector || a.mozMatchesSelector || a.msMatchesSelector || a.oMatchesSelector
-    for (var i in sheets) {
-        var rules = sheets[i].rules || sheets[i].cssRules
-        for (var r in rules) {
-            if (a.matches(rules[r].selectorText)) {
-                o.push(rules[r])
-            }
+    var rules = sheet.rules || sheet.cssRules
+    for (var r in rules) {
+        if (a.matches(rules[r].selectorText)) {
+            o.push(rules[r])
         }
     }
     return o
@@ -399,6 +405,6 @@ document.onkeypress = function(e) {
         e.preventDefault();
         // console.log(document.styleSheets)
         console.log(selectedRegion)
-        console.log(cssOf(selectedRegion.anchorElement))
+        console.log(document.styleSheets)
     }
 }
