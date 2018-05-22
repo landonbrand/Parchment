@@ -10,8 +10,8 @@ var classListItemTemplate = `
 `
 
 var cssPanelTemplate = `
-<div class="_parchment_-field-group _parchment_-css-panel">
-    <span class="_parchment_-close-thin"></span>
+<div class="_parchment_-css-panel _parchment_-css-panel">
+    <span class="_parchment_-close-thin" onclick="removeCssRule(event)"></span>
     <span class="_parchment_-selector"
             contenteditable="true"}>
             {{selector}}
@@ -192,7 +192,7 @@ function cssInputsChanged(event) {
 
 function updateCss(eventTargetElement) {
     var styleSheet = document.styleSheets[0]
-    var cssPanel = nearestParentOfClass(eventTargetElement, '_parchment_-field-group')
+    var cssPanel = nearestParentOfClass(eventTargetElement, '_parchment_-css-panel')
     var renderedCss = cssRuleFromPanel(cssPanel)
     var index = panelIndexToStyleSheetIndex[getChildNumber(cssPanel)]
     console.log(getChildNumber(cssPanel))
@@ -233,7 +233,15 @@ function removeDeclaration(event) {
     updateCss(newTarget)
 }
 
-function newStyle() {
+function removeCssRule(event) {
+    let newTarget = event.target.parentElement.previousSibling
+
+    let declarationElement = nearestParentOfClass(event.target, '_parchment_-css-panel')
+    declarationElement.remove()
+    updateCss(newTarget)
+}
+
+function newCssRule() {
     let renderedCssDeclarations = renderNewCssDeclaration()
     let selectorVars = {
         selector: 'new-selector',
