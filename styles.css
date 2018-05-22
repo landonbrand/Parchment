@@ -119,10 +119,17 @@
   box-shadow: 0px 3px 2px rgba(0,0,0,0.3);
 }
 
-#_parchment_-sidebar span{
+#_parchment_-sidebar span {
   font-size: 12px;
   line-height: 1em;
   padding: 8px;
+}
+
+#_parchment_-sidebar input {
+  font-size: 12px;
+  line-height: 1em;
+  padding: 8px;
+  height: 1em;
 }
 
 #_parchment_-sidebar .big {
@@ -348,15 +355,14 @@
   font-weight: bold;
   margin: 0;
   margin-left: -3px;
-  padding: 6px;
-  padding-top: 7px;
+  padding: 7px;
   border-left: none;
 }
 
 #_parchment_-sidebar ._parchment_-declaration-value {
   display: inline;
   margin-left: -4px;
-  border-to_parchment_-right-radius: 4px;
+  border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   margin: 0;
   padding: 6px;
@@ -364,13 +370,13 @@
 
 #_parchment_-sidebar ._parchment_-remove-declaration {
   display: inline-block;
-  border-to_parchment_-left-radius: 4px;
+  border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   background-color: rgb(220, 197, 214);
   color: rgb(150, 31, 98);
   font-weight: bold;
   margin: 0;
-  padding: 6px;
+  padding: 7px;
   cursor: pointer;
   text-shadow: 0px 1px #eee;
 }
@@ -489,4 +495,9 @@
 
 #_parchment_-edit:focus{
   outline: none;
+}
+
+._parchment_-tmp-element {
+  visibility: hidden;
+  white-space: pre;
 }

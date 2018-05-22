@@ -10,11 +10,11 @@
             <section id="_parchment_-sidebar-top">
                 <button id="_parchment_-delete" class="_parchment_-delete-button" onclick="deleteElement()">Delete Element</button>
                 <div class="_parchment_-inline-brick">
-                    <span id="_parchment_-tagName"
+                    <input id="_parchment_-tagName"
                         class="_parchment_-field _parchment_-tag-name"
                         contenteditable="true"
-                        onkeyup="updateSelectedElement()">
-                    </span>
+                        onkeyup="updateSelectedElement()"
+                        onfocus="this.select()">
                 </div>
                 <div class="_parchment_-inline-brick _parchment_-padded-top">
                     <button id="_parchment_-selectParent" class="_parchment_-small-square-btn" onclick="selectParent()">^</button>
@@ -26,12 +26,12 @@
             
                 <span id="_parchment_-tagId" class="_parchment_-field full-width _parchment_-tag-id-outer" contenteditable="false">
                     <span class="_parchment_-no-padding _parchment_-tag-id"><b>#</b></span>
-                    <span id="_parchment_-tagId-unfocusable"
+                    <input id="_parchment_-tagId-unfocusable"
                         tabindex="-1"
                         class="_parchment_-no-padding _parchment_-no-focus _parchment_-tag-id"
-                        contenteditable="true"
-                        onkeyup="updateSelectedElement()">
-                    </span>
+                        onfocus="this.select()"
+                        onkeyup="updateSelectedElement()"
+                        placeholder="[no-id]">
                 </span>
             </section>
             <section id="_parchment_-sidebar-classes" class="_parchment_-class-list">

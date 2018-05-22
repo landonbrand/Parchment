@@ -1,21 +1,21 @@
 // templates
 
 var classListItemTemplate = `
-<span 
-    class="_parchment_-class-list-item" 
+<input 
+    class="_parchment_-class-list-item _parchment_-select-on-focus" 
     contenteditable="true"  
-    onkeyup="updateSelectedElement()">
-    {{class}}
-</span>
+    onkeyup="updateSelectedElement(); adjustWidthOfInput(this);"
+    value="{{class}}"
+    onfocus="this.select()">
 `
 
 var cssPanelTemplate = `
 <div class="_parchment_-css-panel _parchment_-css-panel">
     <span class="_parchment_-close-thin" onclick="removeCssRule(event)"></span>
-    <span class="_parchment_-selector"
-            contenteditable="true">
-            {{selector}}
-    </span>
+    <input class="_parchment_-selector"
+            contenteditable="true"
+            onfocus="this.select()"
+            value="{{selector}}">
     <br/>
     {{cssDeclarations}}
     <span class="_parchment_-add-declaration" onclick="addDeclaration(event)">+ add declaration</span>
@@ -24,19 +24,16 @@ var cssPanelTemplate = `
 
 var cssDeclarationTemplate = `
 <span class="_parchment_-declaration">
-    <span contenteditable="false"
-            class="_parchment_-remove-declaration"
+    <span class="_parchment_-remove-declaration"
             onclick="removeDeclaration(event)">x</span>
 
-    <span class="_parchment_-declaration _parchment_-declaration-property"
-            contenteditable="true">
-
-        {{property}}
-    </span>
-    <span class="_parchment_-declaration _parchment_-declaration-value"
-            contenteditable="true">
-        {{value}}
-    </span>
+    <input class="_parchment_-declaration _parchment_-declaration-property"
+            onfocus="this.select()"
+            value="{{property}}">
+    <input class="_parchment_-declaration _parchment_-declaration-value"
+            contenteditable="true"
+            onfocus="this.select()"
+            value={{value}}>
 </span>
 `
 
@@ -78,15 +75,15 @@ function editedMouseUp(e) {
 }
 
 function addNewClass(e) {
-    newHtml = renderTemplate(classListItemTemplate, {class: "new-class"})
-    newElement = createElementFromHTML(newHtml)
-    classListRoot = document.getElementById("_parchment_-class-list")
+    let newHtml = renderTemplate(classListItemTemplate, {class: "new-class"})
+    let newElement = createElementFromHTML(newHtml)
+    let classListRoot = document.getElementById("_parchment_-class-list")
     classListRoot.insertBefore(newElement, classListRoot.firstChild);
 }
 
 function updateSelectedElement() {
-    var newTagName = selectedRegion.anchorElement.nodeName = document.getElementById("_parchment_-tagName").innerHTML.replace(/&nbsp;/gi,'').trim()
-    var newId = selectedRegion.anchorElement.nodeName = document.getElementById("_parchment_-tagId-unfocusable").innerHTML.replace(/&nbsp;/gi,'').trim()
+    var newTagName = selectedRegion.anchorElement.nodeName = document.getElementById("_parchment_-tagName").value.trim()
+    var newId = selectedRegion.anchorElement.nodeName = document.getElementById("_parchment_-tagId-unfocusable").value.trim()
     if (newTagName.length < 1) { return }
 
     var element = selectedRegion.anchorElement
@@ -104,12 +101,14 @@ function updateSelectedElement() {
     // update edited attributes
     newElement.id = newId
     newClassListItems = document.getElementsByClassName("_parchment_-class-list-item")
+    console.log("newClassListItems", newClassListItems)
     for (var i = 0; i < newElement.classList.length; i++) {
         newElement.classList.remove(newElement.classList[i])
     }
     for (var i = 0; i < newClassListItems.length; i++) {
-        if (newClassListItems[i].innerText.trim().length > 0) {
-            newElement.classList.add(newClassListItems[i].innerText.trim())
+        if (newClassListItems[i].value.trim().length > 0) {
+            console.log(newClassListItems[i].value)
+            newElement.classList.add(newClassListItems[i].value.trim())
         }
     }
 
@@ -138,8 +137,8 @@ function updateSideBar() {
     panelIndexToStyleSheetIndex = []
     let selectedElement = selectedRegion.anchorElement
 
-    document.getElementById("_parchment_-tagName").innerHTML = selectedElement.nodeName
-    document.getElementById("_parchment_-tagId-unfocusable").innerHTML = selectedElement.id
+    document.getElementById("_parchment_-tagName").value = selectedElement.nodeName
+    document.getElementById("_parchment_-tagId-unfocusable").value = selectedElement.id
     
     let renderedClassListItems = ""
     for (let i = 0; i < selectedElement.classList.length; i++) {
@@ -153,12 +152,15 @@ function updateSideBar() {
         renderedClassListItems += renderedTemplate
     }
     document.getElementById("_parchment_-class-list").innerHTML = renderedClassListItems
+    let classListItems = document.getElementsByClassName('_parchment_-class-list-item')
+    for (let i = 0; i < classListItems.length; i++) {
+        adjustWidthOfInput(classListItems[i])
+    }
 
     let renderedCSSPanels = ""
     let selectedElementCSS = cssOfThisAndParents(selectedElement)
     for (let i = 0; i < selectedElementCSS.length; i++) {
         let renderedCssDeclarations = ""
-        let cssDeclarations = [] // used for keeping track of currentCssDeclarations
         if (selectedElementCSS[i].selectorText.includes("_parchment_-")) {
             continue
         }
@@ -176,6 +178,9 @@ function updateSideBar() {
             cssDeclarations: renderedCssDeclarations
         }
         let renderedCSSPanelsTemplate = renderTemplate(cssPanelTemplate, selectorVars)
+        if (renderedCSSPanels.includes(renderedCSSPanelsTemplate)) {
+            continue
+        }
         renderedCSSPanels += renderedCSSPanelsTemplate
         // update internal store
         let styleSheet = document.styleSheets[1]
@@ -213,15 +218,17 @@ function updateCss(eventTargetElement) {
 }
 
 function cssRuleFromPanel(panel) {
-    let selector = panel.getElementsByClassName('_parchment_-selector')[0].innerText
+    let selector = panel.getElementsByClassName('_parchment_-selector')[0].value
     let ruleElements = panel.getElementsByClassName('_parchment_-declaration-property')
     let rules = []
     for (let i = 0; i < ruleElements.length; i++) {
-        let property = panel.getElementsByClassName('_parchment_-declaration-property')[i].innerText.trim()
-        let value = panel.getElementsByClassName('_parchment_-declaration-value')[i].innerText.trim()
+        let property = panel.getElementsByClassName('_parchment_-declaration-property')[i].value.trim()
+        let value = panel.getElementsByClassName('_parchment_-declaration-value')[i].value.trim()
         rules.push(property + ": " + value + "; ")
     }
     let ruleString = selector + " {" + rules.join("") + "} "
+    console.log(ruleString)
+
     return ruleString
 }
 
@@ -313,6 +320,21 @@ function deleteElement() {
     selectParent()
     elementToDelete.remove()
 }
+
+function getWidthOfInput(inputEl) {
+    var tmp = document.createElement("span");
+    tmp.className = "_parchment_-class-list-item _parchment_-tmp-element";
+    tmp.innerHTML = inputEl.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    document.body.appendChild(tmp);
+    var theWidth = tmp.getBoundingClientRect().width;
+    document.body.removeChild(tmp);
+    return theWidth;
+}
+
+function adjustWidthOfInput(inputEl) {
+    inputEl.style.width = getWidthOfInput(inputEl) + "px";
+}
+
 
 function getChildNumber(node) {
     return Array.prototype.indexOf.call(node.parentNode.children, node)
