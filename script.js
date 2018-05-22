@@ -195,7 +195,6 @@ function updateCss(eventTargetElement) {
     var cssPanel = nearestParentOfClass(eventTargetElement, '_parchment_-css-panel')
     var renderedCss = cssRuleFromPanel(cssPanel)
     var index = panelIndexToStyleSheetIndex[getChildNumber(cssPanel)]
-    console.log(getChildNumber(cssPanel))
     try {
         styleSheet.insertRule(renderedCss, index)
         styleSheet.deleteRule(index + 1)
@@ -234,11 +233,12 @@ function removeDeclaration(event) {
 }
 
 function removeCssRule(event) {
-    let newTarget = event.target.parentElement.previousSibling
-
-    let declarationElement = nearestParentOfClass(event.target, '_parchment_-css-panel')
-    declarationElement.remove()
-    updateCss(newTarget)
+    let styleSheet = document.styleSheets[0]
+    let cssPanel = nearestParentOfClass(event.target, '_parchment_-css-panel')
+    let childNumber = getChildNumber(cssPanel)
+    let indexToDelete = panelIndexToStyleSheetIndex[childNumber]
+    styleSheet.deleteRule(indexToDelete)
+    updateSideBar()
 }
 
 function newCssRule() {
@@ -307,7 +307,6 @@ function deleteElement() {
 }
 
 function getChildNumber(node) {
-    console.log("childNodes:", node.parentNode.children)
     return Array.prototype.indexOf.call(node.parentNode.children, node)
 }
 
@@ -370,9 +369,7 @@ function cssOfThisAndParents(a) {
     let o = []
     let el = a
     while (el.parentElement != null) {
-        console.log(cssOf(el))
         o = o.concat(cssOf(el))
-        console.log(o)
         el = el.parentElement
     }
     return o
