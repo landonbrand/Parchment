@@ -128,6 +128,7 @@ function refreshSelection() {
 }
 
 function updateSideBar() {
+    panelIndexToStyleSheetIndex = []
     let selectedElement = selectedRegion.anchorElement
 
     document.getElementById("p-tagName").innerHTML = selectedElement.nodeName
@@ -135,6 +136,9 @@ function updateSideBar() {
     
     let renderedClassListItems = ""
     for (let i = 0; i < selectedElement.classList.length; i++) {
+        if (selectedElement.classList[i] === "p-selected") {
+            continue
+        }
         let vars = {
             class: selectedElement.classList[i]
         }
@@ -148,6 +152,9 @@ function updateSideBar() {
     for (let i = 0; i < selectedElementCSS.length; i++) {
         let renderedCSSRules = ""
         let cssRules = [] // used for keeping track of currentCSSRules
+        if (selectedElementCSS[i].selectorText === ".p-selected") {
+            continue
+        }
         for (let j = 0; j < selectedElementCSS[i].styleMap.size; j++) {
             let cssRuleProperty = selectedElementCSS[i].style[j]
             let cssRuleVars = {
@@ -302,11 +309,15 @@ function SelectRegion(anchorNode) {
     // this.extentNode = extentNode;
     // this.anchorOffset = anchorOffset;
     // this.extentOffset = extentOffset;
+    if (typeof selectedRegion.anchorElement !== "undefined") {
+        selectedRegion.anchorElement.classList.remove("p-selected")
+    }
     if(anchorNode.nodeName === "#text"){
         this.anchorElement = anchorNode.parentNode;
     } else {
         this.anchorElement = anchorNode;
     }
+    this.anchorElement.classList.add("p-selected")
     // if(extentNode.nodeName === "#text"){
     //     this.extentElement = extentNode.parentNode;
     // } else {
