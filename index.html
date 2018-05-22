@@ -9,7 +9,7 @@
     <body>
         <div id="p-sidebar">
             <section id="p-sidebar-top">
-            <button id="p-delete" class="p-delete-button">Delete Element</button>
+            <button id="p-delete" class="p-delete-button" onclick="deleteElement()">Delete Element</button>
             <div class="p-inline-brick">
                 <span id="p-tagName"
                     class="p-field p-tag-name"
@@ -21,7 +21,8 @@
                 <button id="p-selectParent" class="p-small-square-btn" onclick="selectParent()">^</button>
         
                 <br/>
-                <button id="p-newNode" class="p-small-square-btn">+</button>
+                <button id="p-newNode" class="p-small-square-btn" onclick="newElement()">+</button>
+                <button id="p-newNode" class="p-small-square-btn" onclick="newElementEnclosing()">[+]</button>
             </div>
         
             <span id="p-tagId" class="p-field full-width p-tag-id-outer" contenteditable="false">
@@ -40,36 +41,8 @@
                 </div>
             </section>
             <section id="p-sidebar-css-panels">
-                <div class="p-field-group">
-                    <span class="p-close-thin"></span>
-                    <span class="p-selector"
-                            contenteditable="true">
-                            .apple a
-                    </span>
-                    <br/>
-                    <!-- {{#each style.rules as |rule|}} -->
-                        <span class="p-declaration">
-                            <span contenteditable="false"
-                                    class="p-remove-declaration">x</span>
-                    
-                            <span class="p-declaration p-declaration-property"
-                                    contenteditable="true">
-                    
-                                padding
-                            </span>
-                            <span class="p-declaration p-declaration-value"
-                                    contenteditable="true">
-                                10px
-                            </span>
-                        </span>
-                        <br/>
-                    <!-- {{/each}} -->
-                    <span class="p-add-declaration">+ add declaration</span>
-                </div>
-                <br/>
-            <!-- {{/each}} -->
-            <button class="p-new-style-btn p-padding-6">New Style</button>
             </section>
+            <button class="p-new-style-btn p-padding-6" onclick="newStyle()">New Style</button>
         <br/>
         <br/>
         <p>CMD + S to save</p>

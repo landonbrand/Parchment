@@ -44,7 +44,7 @@ body {
 #p-sidebar {
   position: fixed;
   left:0; top: 0; bottom: 0;
-  width: 200px;
+  width: 220px;
   background-color: rgb(29, 69, 135);
   padding: 10px;
   text-align: left;
@@ -191,6 +191,7 @@ body {
   background-color: rgb(94, 134, 196);
   border-radius: 3px;
   padding: 8px;
+  margin-bottom: 12px;
 }
 
 #p-sidebar .p-add-declaration {
@@ -313,6 +314,7 @@ body {
   display: block;
   margin: 0;
   margin-top: -8px;
+  margin-bottom: 18px;
   padding: 0;
   border-radius: 4px;
   font-size: 0.9em;
