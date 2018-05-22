@@ -6,43 +6,43 @@
         <link rel="stylesheet" href="styles.css" media="screen" title="Parchment css">
         <script type="text/javascript" src="script.js"></script>
     </head>
-    <body>
-        <div id="p-sidebar">
-            <section id="p-sidebar-top">
-            <button id="p-delete" class="p-delete-button" onclick="deleteElement()">Delete Element</button>
-            <div class="p-inline-brick">
-                <span id="p-tagName"
-                    class="p-field p-tag-name"
+    <body class="_parchment_-body">
+        <div id="_parchment_-sidebar">
+            <section id="_parchment_-sidebar-top">
+            <button id="_parchment_-delete" class="_parchment_-delete-button" onclick="deleteElement()">Delete Element</button>
+            <div class="_parchment_-inline-brick">
+                <span id="_parchment_-tagName"
+                    class="_parchment_-field _parchment_-tag-name"
                     contenteditable="true"
                     onkeyup="updateSelectedElement()">
                 </span>
             </div>
-            <div class="p-inline-brick p-padded-top">
-                <button id="p-selectParent" class="p-small-square-btn" onclick="selectParent()">^</button>
+            <div class="_parchment_-inline-brick _parchment_-padded-top">
+                <button id="_parchment_-selectParent" class="_parchment_-small-square-btn" onclick="selectParent()">^</button>
         
                 <br/>
-                <button id="p-newNode" class="p-small-square-btn" onclick="newElement()">+</button>
-                <button id="p-newNode" class="p-small-square-btn" onclick="newElementEnclosing()">[+]</button>
+                <button id="_parchment_-newNode" class="_parchment_-small-square-btn" onclick="newElement()">+</button>
+                <button id="_parchment_-newNode" class="_parchment_-small-square-btn" onclick="newElementEnclosing()">[+]</button>
             </div>
         
-            <span id="p-tagId" class="p-field full-width p-tag-id-outer" contenteditable="false">
-                <span class="p-no-padding p-tag-id"><b>#</b></span>
-                <span id="p-tagId-unfocusable"
+            <span id="_parchment_-tagId" class="_parchment_-field full-width _parchment_-tag-id-outer" contenteditable="false">
+                <span class="_parchment_-no-padding _parchment_-tag-id"><b>#</b></span>
+                <span id="_parchment_-tagId-unfocusable"
                     tabindex="-1"
-                    class="p-no-padding p-no-focus p-tag-id"
+                    class="_parchment_-no-padding _parchment_-no-focus _parchment_-tag-id"
                     contenteditable="true"
                     onkeyup="updateSelectedElement()">
                 </span>
             </span>
             </section>
-            <section id="p-sidebar-classes" class="p-class-list">
-                <span id="p-newClass" class="p-fake-class-list-item" onclick="addNewClass()">+</span>
-                <div id="p-class-list">
+            <section id="_parchment_-sidebar-classes" class="_parchment_-class-list">
+                <span id="_parchment_-newClass" class="_parchment_-fake-class-list-item" onclick="addNewClass()">+</span>
+                <div id="_parchment_-class-list">
                 </div>
             </section>
-            <section id="p-sidebar-css-panels">
+            <section id="_parchment_-sidebar-css-panels">
             </section>
-            <button class="p-new-style-btn p-padding-6" onclick="newStyle()">New Style</button>
+            <button class="_parchment_-new-style-btn _parchment_-padding-6" onclick="newStyle()">New Style</button>
         <br/>
         <br/>
         <p>CMD + S to save</p>
@@ -50,9 +50,9 @@
         </div>
         </div>
 
-        <div class="p-container">
-            <div class="p-page">
-                <div id="p-edit" contenteditable="true" onkeyup="edited(event)" onmouseup="editedMouseUp(event)">
+        <div class="_parchment_-container">
+            <div class="_parchment_-page">
+                <div id="_parchment_-edit" contenteditable="true" onkeyup="edited(event)" onmouseup="editedMouseUp(event)">
                     <section id="hero" class="hero">
                         <h1 id="hero-heading" class="major-thing">Hello, World!</h1>
                         <p class="bigger better more-awesome">Parchment is an editor for the future of web development.</p>

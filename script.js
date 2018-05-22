@@ -2,7 +2,7 @@
 
 var classListItemTemplate = `
 <span 
-    class="p-class-list-item" 
+    class="_parchment_-class-list-item" 
     contenteditable="true"  
     onkeyup="updateSelectedElement()">
     {{class}}
@@ -10,30 +10,30 @@ var classListItemTemplate = `
 `
 
 var cssPanelTemplate = `
-<div class="p-field-group p-css-panel">
-    <span class="p-close-thin"></span>
-    <span class="p-selector"
+<div class="_parchment_-field-group _parchment_-css-panel">
+    <span class="_parchment_-close-thin"></span>
+    <span class="_parchment_-selector"
             contenteditable="true"}>
             {{selector}}
     </span>
     <br/>
-    {{cssRules}}
-    <span class="p-add-declaration" onclick="addDeclaration(event)">+ add declaration</span>
+    {{cssDeclarations}}
+    <span class="_parchment_-add-declaration" onclick="addDeclaration(event)">+ add declaration</span>
 </div>
 `
 
-var cssRuleTemplate = `
-<span class="p-declaration">
+var cssDeclarationTemplate = `
+<span class="_parchment_-declaration">
     <span contenteditable="false"
-            class="p-remove-declaration"
+            class="_parchment_-remove-declaration"
             onclick="removeDeclaration(event)">x</span>
 
-    <span class="p-declaration p-declaration-property"
+    <span class="_parchment_-declaration _parchment_-declaration-property"
             contenteditable="true">
 
         {{property}}
     </span>
-    <span class="p-declaration p-declaration-value"
+    <span class="_parchment_-declaration _parchment_-declaration-value"
             contenteditable="true">
         {{value}}
     </span>
@@ -62,7 +62,7 @@ var html = ""
 var panelIndexToStyleSheetIndex = []
 
 function edited(e) {
-    html = document.getElementById("p-edit").innerHTML
+    html = document.getElementById("_parchment_-edit").innerHTML
     refreshSelection()
 }
 
@@ -73,13 +73,13 @@ function editedMouseUp(e) {
 function addNewClass(e) {
     newHtml = renderTemplate(classListItemTemplate, {class: "new-class"})
     newElement = createElementFromHTML(newHtml)
-    classListRoot = document.getElementById("p-class-list")
+    classListRoot = document.getElementById("_parchment_-class-list")
     classListRoot.insertBefore(newElement, classListRoot.firstChild);
 }
 
 function updateSelectedElement() {
-    var newTagName = selectedRegion.anchorElement.nodeName = document.getElementById("p-tagName").innerHTML.replace(/&nbsp;/gi,'').trim()
-    var newId = selectedRegion.anchorElement.nodeName = document.getElementById("p-tagId-unfocusable").innerHTML.replace(/&nbsp;/gi,'').trim()
+    var newTagName = selectedRegion.anchorElement.nodeName = document.getElementById("_parchment_-tagName").innerHTML.replace(/&nbsp;/gi,'').trim()
+    var newId = selectedRegion.anchorElement.nodeName = document.getElementById("_parchment_-tagId-unfocusable").innerHTML.replace(/&nbsp;/gi,'').trim()
     if (newTagName.length < 1) { return }
 
     var element = selectedRegion.anchorElement
@@ -96,7 +96,7 @@ function updateSelectedElement() {
 
     // update edited attributes
     newElement.id = newId
-    newClassListItems = document.getElementsByClassName("p-class-list-item")
+    newClassListItems = document.getElementsByClassName("_parchment_-class-list-item")
     for (var i = 0; i < newElement.classList.length; i++) {
         newElement.classList.remove(newElement.classList[i])
     }
@@ -131,12 +131,12 @@ function updateSideBar() {
     panelIndexToStyleSheetIndex = []
     let selectedElement = selectedRegion.anchorElement
 
-    document.getElementById("p-tagName").innerHTML = selectedElement.nodeName
-    document.getElementById("p-tagId-unfocusable").innerHTML = selectedElement.id
+    document.getElementById("_parchment_-tagName").innerHTML = selectedElement.nodeName
+    document.getElementById("_parchment_-tagId-unfocusable").innerHTML = selectedElement.id
     
     let renderedClassListItems = ""
     for (let i = 0; i < selectedElement.classList.length; i++) {
-        if (selectedElement.classList[i] === "p-selected") {
+        if (selectedElement.classList[i] === "_parchment_-selected") {
             continue
         }
         let vars = {
@@ -145,14 +145,14 @@ function updateSideBar() {
         let renderedTemplate = renderTemplate(classListItemTemplate, vars)
         renderedClassListItems += renderedTemplate
     }
-    document.getElementById("p-class-list").innerHTML = renderedClassListItems
+    document.getElementById("_parchment_-class-list").innerHTML = renderedClassListItems
 
     let renderedCSSPanels = ""
-    let selectedElementCSS = cssOf(selectedElement)
+    let selectedElementCSS = cssOfThisAndParents(selectedElement)
     for (let i = 0; i < selectedElementCSS.length; i++) {
-        let renderedCSSRules = ""
-        let cssRules = [] // used for keeping track of currentCSSRules
-        if (selectedElementCSS[i].selectorText === ".p-selected") {
+        let renderedCssDeclarations = ""
+        let cssDeclarations = [] // used for keeping track of currentCssDeclarations
+        if (selectedElementCSS[i].selectorText.includes("_parchment_-")) {
             continue
         }
         for (let j = 0; j < selectedElementCSS[i].styleMap.size; j++) {
@@ -161,12 +161,12 @@ function updateSideBar() {
                 property: cssRuleProperty,
                 value: selectedElementCSS[i].style[cssRuleProperty]
             }
-            let renderedCSSRulesTemplate = renderTemplate(cssRuleTemplate, cssRuleVars)
-            renderedCSSRules += renderedCSSRulesTemplate
+            let renderedCssDeclarationsTemplate = renderTemplate(cssDeclarationTemplate, cssRuleVars)
+            renderedCssDeclarations += renderedCssDeclarationsTemplate
         }
         let selectorVars = {
             selector: selectedElementCSS[i].selectorText,
-            cssRules: renderedCSSRules
+            cssDeclarations: renderedCssDeclarations
         }
         let renderedCSSPanelsTemplate = renderTemplate(cssPanelTemplate, selectorVars)
         renderedCSSPanels += renderedCSSPanelsTemplate
@@ -178,13 +178,12 @@ function updateSideBar() {
             }
         }
     }
-    document.getElementById("p-sidebar-css-panels").innerHTML = renderedCSSPanels
+    document.getElementById("_parchment_-sidebar-css-panels").innerHTML = renderedCSSPanels
     // bind event listeners to newly created elements
-    let cssPanels = document.getElementsByClassName('p-css-panel')
+    let cssPanels = document.getElementsByClassName('_parchment_-css-panel')
     for (let i = 0; i < cssPanels.length; i++) {
         cssPanels[i].addEventListener('input', cssInputsChanged)
     }
-    
 }
 
 function cssInputsChanged(event) {
@@ -193,7 +192,7 @@ function cssInputsChanged(event) {
 
 function updateCss(eventTargetElement) {
     var styleSheet = document.styleSheets[0]
-    var cssPanel = nearestParentOfClass(eventTargetElement, 'p-field-group')
+    var cssPanel = nearestParentOfClass(eventTargetElement, '_parchment_-field-group')
     var renderedCss = cssRuleFromPanel(cssPanel)
     var index = panelIndexToStyleSheetIndex[getChildNumber(cssPanel)]
     console.log(getChildNumber(cssPanel))
@@ -208,12 +207,12 @@ function updateCss(eventTargetElement) {
 }
 
 function cssRuleFromPanel(panel) {
-    let selector = panel.getElementsByClassName('p-selector')[0].innerText
-    let ruleElements = panel.getElementsByClassName('p-declaration-property')
+    let selector = panel.getElementsByClassName('_parchment_-selector')[0].innerText
+    let ruleElements = panel.getElementsByClassName('_parchment_-declaration-property')
     let rules = []
     for (let i = 0; i < ruleElements.length; i++) {
-        let property = panel.getElementsByClassName('p-declaration-property')[i].innerText.trim()
-        let value = panel.getElementsByClassName('p-declaration-value')[i].innerText.trim()
+        let property = panel.getElementsByClassName('_parchment_-declaration-property')[i].innerText.trim()
+        let value = panel.getElementsByClassName('_parchment_-declaration-value')[i].innerText.trim()
         rules.push(property + ": " + value + "; ")
     }
     let ruleString = selector + " {" + rules.join("") + "} "
@@ -229,16 +228,16 @@ function addDeclaration(event) {
 function removeDeclaration(event) {
     let newTarget = event.target.parentElement.previousSibling
 
-    let declarationElement = nearestParentOfClass(event.target, 'p-declaration')
+    let declarationElement = nearestParentOfClass(event.target, '_parchment_-declaration')
     declarationElement.remove()
     updateCss(newTarget)
 }
 
 function newStyle() {
-    let renderedCSSRules = renderNewCssDeclaration()
+    let renderedCssDeclarations = renderNewCssDeclaration()
     let selectorVars = {
         selector: 'new-selector',
-        cssRules: renderedCSSRules
+        cssDeclarations: renderedCssDeclarations
     }
     let renderedCSSPanelsTemplate = renderTemplate(cssPanelTemplate, selectorVars)
 
@@ -248,11 +247,11 @@ function newStyle() {
     panelIndexToStyleSheetIndex.push(styleSheet.cssRules.length - 1)
 
     // push to document
-    let oldInnerHTML = document.getElementById("p-sidebar-css-panels").innerHTML
-    document.getElementById("p-sidebar-css-panels").innerHTML = oldInnerHTML + renderedCSSPanelsTemplate
+    let oldInnerHTML = document.getElementById("_parchment_-sidebar-css-panels").innerHTML
+    document.getElementById("_parchment_-sidebar-css-panels").innerHTML = oldInnerHTML + renderedCSSPanelsTemplate
 
     // bind event listeners to newly created elements
-    let cssPanels = document.getElementsByClassName('p-css-panel')
+    let cssPanels = document.getElementsByClassName('_parchment_-css-panel')
     cssPanels[cssPanels.length - 1].addEventListener('input', cssInputsChanged)
 }
 
@@ -261,13 +260,13 @@ function renderNewCssDeclaration() {
         property: 'new-property',
         value: 0
     }
-    let renderedDeclarationTemplate = renderTemplate(cssRuleTemplate, cssRuleVars)
+    let renderedDeclarationTemplate = renderTemplate(cssDeclarationTemplate, cssRuleVars)
     return renderedDeclarationTemplate
 }
 
 function selectParent() {
     newRegion = new SelectRegion(selectedRegion.anchorElement.parentNode)
-    if (newRegion.anchorElement.id === "p-edit") {
+    if (newRegion.anchorElement.id === "_parchment_-edit") {
         console.log("already at root!")
     } else {
         selectedRegion = newRegion
@@ -310,14 +309,14 @@ function SelectRegion(anchorNode) {
     // this.anchorOffset = anchorOffset;
     // this.extentOffset = extentOffset;
     if (typeof selectedRegion.anchorElement !== "undefined") {
-        selectedRegion.anchorElement.classList.remove("p-selected")
+        selectedRegion.anchorElement.classList.remove("_parchment_-selected")
     }
     if(anchorNode.nodeName === "#text"){
         this.anchorElement = anchorNode.parentNode;
     } else {
         this.anchorElement = anchorNode;
     }
-    this.anchorElement.classList.add("p-selected")
+    this.anchorElement.classList.add("_parchment_-selected")
     // if(extentNode.nodeName === "#text"){
     //     this.extentElement = extentNode.parentNode;
     // } else {
@@ -355,6 +354,18 @@ function cssOf(a) {
                 o.push(rules[r])
             }
         }
+    }
+    return o
+}
+
+function cssOfThisAndParents(a) {
+    let o = []
+    let el = a
+    while (el.parentElement != null) {
+        console.log(cssOf(el))
+        o = o.concat(cssOf(el))
+        console.log(o)
+        el = el.parentElement
     }
     return o
 }
