@@ -40,12 +40,17 @@
   text-align: center;
 }
 
-._parchment_-page {
+._parchment_-page-parent {
   display: inline-block;
   text-align: left;
   width: 900px;
   padding-left: 300px;
   padding-right: 200px;
+}
+
+#_parchment_-page {
+    display: block;
+    min-height: 400px;
 }
 
 #edit {
@@ -209,7 +214,7 @@
 }
 
 #_parchment_-sidebar ._parchment_-css-panel {
-  background-color: rgb(94, 134, 196);
+  background-color: rgb(105, 145, 206);
   border-radius: 3px;
   padding: 8px;
   margin-bottom: 12px;
@@ -230,7 +235,13 @@
 }
 
 #_parchment_-sidebar ._parchment_-add-declaration:hover {
-  background-color: rgb(78, 113, 188);
+  background-color: rgb(89, 124, 201);
+  text-decoration: underline;
+}
+
+#_parchment_-sidebar ._parchment_-add-declaration:focus {
+  background-color: rgb(89, 124, 201);
+  text-decoration: underline;
 }
 
 #_parchment_-sidebar ._parchment_-padding-6 {
@@ -301,8 +312,8 @@
   width: 180px;
 }
 
-#_parchment_-sidebar ._parchment_-new-sttyle-btn {
-  background-color: rgb(94, 134, 196);
+#_parchment_-sidebar ._parchment_-new-style-btn {
+  background-color: rgb(68, 103, 178);
   width: 100%;
   text-transform: uppercase;
   font-style: bold;
@@ -310,13 +321,14 @@
   letter-spacing: 1px;
 }
 
-#_parchment_-sidebar ._parchment_-new-sttyle-btn:hover {
-  background-color: rgb(110, 150, 220);
-  width: 100%;
-  text-transform: uppercase;
-  font-style: bold;
-  padding: 10px;
-  letter-spacing: 1px;
+#_parchment_-sidebar ._parchment_-new-style-btn:hover {
+  background-color: rgb(89, 124, 201);
+  text-decoration: underline;
+}
+
+#_parchment_-sidebar ._parchment_-new-style-btn:focus {
+  background-color: rgb(89, 124, 201);
+  text-decoration: underline;
 }
 
 #_parchment_-sidebar ._parchment_-tag-id-outer {

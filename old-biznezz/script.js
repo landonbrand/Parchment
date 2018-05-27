@@ -15,10 +15,14 @@ var cssPanelTemplate = `
     <input class="_parchment_-selector"
             contenteditable="true"
             onfocus="this.select()"
-            value="{{selector}}">
+            value="{{selector}}"
+            size=25>
     <br/>
     {{cssDeclarations}}
-    <span class="_parchment_-add-declaration" onclick="addDeclaration(event)">+ add declaration</span>
+    <span class="_parchment_-add-declaration" 
+        onclick="addDeclaration(event)"
+        tabindex="0"
+        onkeypress="keyPressedOnAddDeclaration(event)">+ add declaration</span>
 </div>
 `
 
@@ -29,7 +33,8 @@ var cssDeclarationTemplate = `
 
     <input class="_parchment_-declaration _parchment_-declaration-property"
             onfocus="this.select()"
-            value="{{property}}">
+            value="{{property}}"
+            size=10>
     <input class="_parchment_-declaration _parchment_-declaration-value"
             contenteditable="true"
             onfocus="this.select()"
@@ -54,20 +59,25 @@ function createElementFromHTML(htmlString) {
 // end templates
 
 // init stuff
-console.log(document.getElementById("_parchment_-sidebar").style)
 
 // create global variables
 
 var selectedRegion = {}
 var html = ""
 var panelIndexToStyleSheetIndex = []
+var pageContents = document.getElementById("_parchment_-edit").textContent
 
 
 // functions
 
 function edited(e) {
-    html = document.getElementById("_parchment_-edit").innerHTML
-    refreshSelection()
+    newPageContents = document.getElementById("_parchment_-edit").textContent
+    if (newPageContents !== pageContents) { // only update if it was actually edited
+        console.log("command let go!")
+        html = document.getElementById("_parchment_-edit").innerHTML
+        refreshSelection()
+        pageContents = newPageContents
+    }
 }
 
 function editedMouseUp(e) {
@@ -77,7 +87,9 @@ function editedMouseUp(e) {
 function addNewClass(e) {
     let newHtml = renderTemplate(classListItemTemplate, {class: "new-class"})
     let newElement = createElementFromHTML(newHtml)
+    adjustWidthOfInput(newElement)
     let classListRoot = document.getElementById("_parchment_-class-list")
+
     classListRoot.insertBefore(newElement, classListRoot.firstChild);
 }
 
@@ -100,14 +112,13 @@ function updateSelectedElement() {
 
     // update edited attributes
     newElement.id = newId
-    newClassListItems = document.getElementsByClassName("_parchment_-class-list-item")
-    console.log("newClassListItems", newClassListItems)
+    newElement.classList.remove('_parchment_-selected')
+    newClassListItems = document.getElementById('_parchment_-sidebar-classes').getElementsByTagName('input')
     for (var i = 0; i < newElement.classList.length; i++) {
         newElement.classList.remove(newElement.classList[i])
     }
     for (var i = 0; i < newClassListItems.length; i++) {
         if (newClassListItems[i].value.trim().length > 0) {
-            console.log(newClassListItems[i].value)
             newElement.classList.add(newClassListItems[i].value.trim())
         }
     }
@@ -135,6 +146,13 @@ function refreshSelection() {
 
 function updateSideBar() {
     panelIndexToStyleSheetIndex = []
+    if (selectedRegion.anchorElement === null) {
+        document.getElementById("_parchment_-tagName").value = ""
+        document.getElementById("_parchment_-tagId-unfocusable").value = ""
+        document.getElementById("_parchment_-class-list").innerHTML = ""
+        document.getElementById("_parchment_-sidebar-css-panels").innerHTML = ""
+        return
+    }
     let selectedElement = selectedRegion.anchorElement
 
     document.getElementById("_parchment_-tagName").value = selectedElement.nodeName
@@ -238,6 +256,13 @@ function addDeclaration(event) {
     parentElement.insertBefore(newDeclarationElement, event.target.previousSibling)
 }
 
+function keyPressedOnAddDeclaration(e) {
+    console.log(e)
+    if (e.key == "Enter") {
+        addDeclaration(e)
+    }
+}
+
 function removeDeclaration(event) {
     let newTarget = event.target.parentElement.previousSibling
 
@@ -278,6 +303,12 @@ function newCssRule() {
     cssPanels[cssPanels.length - 1].addEventListener('input', cssInputsChanged)
 }
 
+function keyPressedOnNewCssRule(e) {
+    if (e.key == "Enter") {
+        newCssRule()
+    }
+}
+
 function renderNewCssDeclaration() {
     let cssRuleVars = {
         property: 'new-property',
@@ -295,6 +326,37 @@ function selectParent() {
         selectedRegion = newRegion
     }
     updateSideBar()
+}
+
+function selectPreviousSibling() {
+    let previousSibling = selectedRegion.anchorElement.previousSibling
+    while (previousSibling.nodeName === "#text") {
+        previousSibling = previousSibling.previousSibling
+    }
+    selectedRegion = new SelectRegion(previousSibling)
+    updateSideBar()
+}
+
+function selectNextSibling() {
+    let nextSibling = selectedRegion.anchorElement.nextSibling
+    while (nextSibling.nodeName === "#text") {
+        nextSibling = nextSibling.nextSibling
+    }
+    selectedRegion = new SelectRegion(nextSibling)
+    updateSideBar()
+}
+
+function selectFirstChild() {
+    firstChild = selectedRegion.anchorElement.firstElementChild
+    if (firstChild !== null) {
+        newRegion = new SelectRegion(selectedRegion.anchorElement.firstElementChild)
+        selectedRegion = newRegion
+        updateSideBar()
+    }
+}
+
+function selectAtCursorPos() {
+    refreshSelection()
 }
 
 function newElement() {
@@ -315,8 +377,16 @@ function newElementEnclosing() {
     updateSideBar()
 }
 
+function newElementWithin() {
+    let newNode = createElementFromHTML("<div></div>")
+    selectedRegion.anchorElement.appendChild(newNode)
+    selectedRegion = new SelectRegion(newNode)
+    updateSideBar()
+}
+
 function deleteElement() {
     let elementToDelete = selectedRegion.anchorElement
+    console.log("elementToDelete: ", elementToDelete)
     selectParent()
     elementToDelete.remove()
 }
@@ -341,24 +411,20 @@ function getChildNumber(node) {
 }
 
 function SelectRegion(anchorNode) {
-    // this.anchorNode = anchorNode;
-    // this.extentNode = extentNode;
-    // this.anchorOffset = anchorOffset;
-    // this.extentOffset = extentOffset;
-    if (typeof selectedRegion.anchorElement !== "undefined") {
+    if (typeof selectedRegion.anchorElement !== "undefined" && selectedRegion.anchorElement !== null) {
         selectedRegion.anchorElement.classList.remove("_parchment_-selected")
     }
-    if(anchorNode.nodeName === "#text"){
-        this.anchorElement = anchorNode.parentNode;
+    if (anchorNode === null) {
+        this.anchorElement = null
     } else {
-        this.anchorElement = anchorNode;
+        if (anchorNode.nodeName === "#text") {
+            this.anchorElement = anchorNode.parentNode;
+        } else {
+            this.anchorElement = anchorNode;
+        }
+        this.anchorElement.classList.add("_parchment_-selected")
     }
-    this.anchorElement.classList.add("_parchment_-selected")
-    // if(extentNode.nodeName === "#text"){
-    //     this.extentElement = extentNode.parentNode;
-    // } else {
-    //     this.extentElement = extentNode;
-    // }
+    
 }
 
 
@@ -422,11 +488,76 @@ function nearestParentOfClass(element, classToFind) {
 
 // log selectedRegion if user presses alt+shift+e
 // TODO: have better shortcut
-document.onkeypress = function(e) {
+
+document.onkeydown = function(e) {
+    // console.log(e.key)
+    // alt + shift + e to log selectedRegion? weird shortcut tho
     if (e.keyCode === 180 && e.altKey === true) {
         e.preventDefault();
         // console.log(document.styleSheets)
         console.log(selectedRegion)
         console.log(document.styleSheets)
+    }
+
+    // esc to deselect
+    if (e.key === 'Escape') {
+        selectedRegion = new SelectRegion(null)
+        updateSideBar()
+    }
+
+    // cmd + ArrowUp to go up one element
+    if (e.key === "ArrowUp" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        selectParent()
+        return false
+    }
+
+    // cmd + ArrowDown to go to first child
+    if (e.key === "ArrowDown" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        selectFirstChild()
+        return false
+    }
+
+    // cmd + ArrowLeft to go to previous sibling
+    if (e.key === "ArrowLeft" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        selectPreviousSibling()
+        return false
+    }
+
+    // cmd + ArrowRight to go to next sibling
+    if (e.key === "ArrowRight" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        selectNextSibling()
+        return false
+    }
+
+    // cmd + / to go to current cursor position
+    if (e.key === "/" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        selectAtCursorPos()
+        return false
+    }
+
+    // cmd + ' to select the tag name input box so they can start editing :)
+    if (e.key === "'" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        document.getElementById('_parchment_-tagName').focus();
+        return false
+    }
+
+    // cmd + Backspace [or delete] to delete currently selected tag
+    if (e.key === "Backspace" && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        deleteElement()
+        return false
     }
 }
